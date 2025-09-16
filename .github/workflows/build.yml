@@ -1,6 +1,5 @@
 name: Build Python executables
 
-# Käynnistyy, kun pushaat main-branchiin tai teet PR:n
 on:
   push:
     branches:
@@ -9,7 +8,6 @@ on:
 
 jobs:
   build:
-    # Käytetään matrix-strategiaa eri OS:lle
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -17,31 +15,27 @@ jobs:
         python-version: [3.11]
 
     steps:
-      # 1️⃣ Lataa repo
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      # 2️⃣ Asenna Python
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
-      # 3️⃣ Asenna riippuvuudet ja PyInstaller
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pip install pyinstaller
 
-      # 4️⃣ Käännä lähdekoodi.py
       - name: Build executable
         run: |
           pyinstaller --onefile lähdekoodi.py
 
-      # 5️⃣ Tallenna suoritettavat tiedostot artifactiksi
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: my-program-${{ matrix.os }}
           path: dist/*
+
