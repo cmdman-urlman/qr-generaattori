@@ -34,8 +34,9 @@ jobs:
           pyinstaller --onefile lähdekoodi.py
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: my-program-${{ matrix.os }}
           path: dist/*
+
 
