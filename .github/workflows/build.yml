@@ -15,33 +15,40 @@ jobs:
         python-version: [3.11]
 
     steps:
+      # 1️⃣ Lataa repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2️⃣ Asenna Python
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
+      # 3️⃣ Asenna riippuvuudet Linux/macOS
       - name: Install dependencies (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
           python -m pip install --upgrade pip
-          pip install segno pyinstaller
+          pip install segno Pillow pyinstaller
 
+      # 4️⃣ Asenna riippuvuudet Windows
       - name: Install dependencies (Windows)
         if: runner.os == 'Windows'
         run: |
           python -m pip install --upgrade pip
-          pip install segno pyinstaller
+          pip install segno Pillow pyinstaller
         shell: powershell
 
+      # 5️⃣ Luo suoritettava tiedosto
       - name: Build executable
         run: |
           pyinstaller --onefile lähdekoodi.py
 
+      # 6️⃣ Lataa tulokset artifacteiksi
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: my-program-${{ matrix.os }}
           path: dist/*
+
